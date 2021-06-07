@@ -6,158 +6,206 @@
 {% block main-content %}
 
 <div class="container">
-  <div class="row">
-    <!-- Latest Posts -->
-    <main class="post blog-post col-lg-8">
-      <div class="container">
-        <div class="post-single">
-          <div class="post-thumbnail"><img src="{{ post.upload.url }}" alt="..." class="img-fluid"></div>
-          <div class="post-details">
-            <div class="post-meta d-flex justify-content-between">
-              <div class="category">
-                {% for tag in post|get_tags_from_post %}
-                <a href="/blog/?q={{tag}}">{{tag}}</a>
-                {% endfor %}
-              
-              </div>
-            </div>
-            <h1>{{ post.title }}<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
-            <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#"
-                class="author d-flex align-items-center flex-wrap">
-                <div class="avatar"><img src="{{ post.author.profile_img.url }}" alt="..." class="img-fluid"></div>
-                <div class="title"><span>{{ post.author.first_name }} {{ post.author.last_name }}</span></div>
-              </a>
-              <div class="d-flex align-items-center flex-wrap">
-                <div class="date"><i class="icon-clock"></i>{{ post.created_on }}</div>
-                <div class="views"><i class="icon-eye"></i> {{ post.n_views }}</div>
-                <div class="comments meta-last"><i class="icon-comment"></i>{{ post.n_comments }}</div>
-              </div>
-            </div>
+	<div class="row">
+		<!-- Latest Posts -->
+		<main class="post blog-post col-lg-8">
+			<div class="container">
+				<div class="post-single">
+					<div class="post-thumbnail"><img src="{{ post.upload.url }}" alt="..." class="img-fluid"></div>
+					<div class="post-details">
+						<div class="post-meta d-flex justify-content-between">
+							<div class="category">
+								{% for tag in post|get_tags_from_post %}
+								<a href="/blog/?q={{tag}}">{{tag}}</a>
+								{% endfor %}
+
+							</div>
+						</div>
+						<h1>{{ post.title }}<a href="#"><i class="fa fa-bookmark-o"></i></a></h1>
+						<div class="post-footer d-flex align-items-center flex-column flex-sm-row"><a href="#"
+								class="author d-flex align-items-center flex-wrap">
+								<div class="avatar"><img src="{{ post.author.profile_img.url }}" alt="..." class="img-fluid"></div>
+								<div class="title"><span>{{ post.author.first_name }} {{ post.author.last_name }}</span></div>
+							</a>
+							<div class="d-flex align-items-center flex-wrap">
+								<div class="date"><i class="icon-clock"></i>{{ post.created_on }}</div>
+								<div class="views"><i class="icon-eye"></i> {{ post.n_views }}</div>
+								<div class="comments meta-last"><i class="icon-comment"></i>{{ post.n_comments }}</div>
+							</div>
+						</div>
+
+						<div class="post-body">
+
+							<blockquote class="blockquote">
+								<p>{{ post.description }}</p>
+							</blockquote>
+
+							{% autoescape off %}
+							{{ post.content }}
+							{% endautoescape %}
+						</div>
+
+						<div class="post-tags" id="tags">
+							{% get_tags as tags %}
+							{% for tag in tags %}
+							<a href="/blog/?q={{ tag }}" class="tag">#{{ tag }}</a>
+							{% endfor %}
+						</div>
+
+						<div class="add-comment" id="add-comment">
+							<header>
+								<h3 class="h6">Leave a reply</h3>
+							</header>
+
+							<form action="/comment" class="commenting-form" method="POST" id="commenting-form">
+								{% csrf_token %}
+								<div class="row">
+									<div class="form-group col-md-6">
+										<input type="text" name="comment-name" id="username" placeholder="Name" class="form-control"
+											required="true">
+									</div>
+									<div class="form-group col-md-6">
+										<input type="email" name="comment-email" id="useremail"
+											placeholder="Email Address (will not be published)" class="form-control">
+									</div>
+									<div class="form-group col-md-12">
+										<textarea name="comment-body" id="comment-body" placeholder="Type your comment" class="form-control"
+											required="true"></textarea>
+									</div>
+									<div class="form-group col-md-12">
+										<button type="submit" class="btn btn-secondary">Submit Comment
+											<div id="spinner" class="spinner-border text-light hide" role="status"
+												style="width: 1rem; height: 1rem;">
+												<span class="sr-only">Loading...</span>
+											</div>
+										</button>
+									</div>
+								</div>
+							</form>
+
+						</div>
+
+						<div class="add-comment">
+							<h3 class="h6" id="comment-status"></h3>
+						</div>
+
+						<div class="post-comments">
+							<header>
+								<br>
+								<h3 class="h6">Post Comments<span class="no-of-comments">(<span id="no-of-comments">{{ post.n_comments }}</span>)</span></h3>
+							</header>
+
+							<div id="comments">
+								{% for comment in comments %}
+								<div class="comment">
+									<div class="comment-header d-flex justify-content-between">
+										<div class="user d-flex align-items-center">
+											<div class="image"><img src="{% static 'img/user.svg' %}" alt="commenter"
+													class="img-fluid rounded-circle"></div>
+											<div class="title"><strong>{{ comment.name }}</strong>
+												<span class="date">{{ comment.created_on|date:"M d, Y" }}</span>
+											</div>
+										</div>
+									</div>
+									<div class="comment-body">
+										<p>{{ comment.body }}</p>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</main>
+		{% include 'blog/sidebar.html' %}
+
+		{% include 'blog/subscribe.html' %}
 
 
-
-
-
-            <!-- actual post of template -->
-
-            <!-- <div class="post-body">
-                  <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                  <p> <img src="{% static 'img/featured-pic-3.jpeg' %}" alt="..." class="img-fluid"></p>
-                  <h3>Lorem Ipsum Dolor</h3>
-                  <p>div Lorem ipsum dolor sit amet, consectetur adipisicing elit. Assumenda temporibus iusto voluptates deleniti similique rerum ducimus sint ex odio saepe. Sapiente quae pariatur ratione quis perspiciatis deleniti accusantium</p>
-                  <blockquote class="blockquote">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip.</p>
-                    <footer class="blockquote-footer">Someone famous in
-                      <cite title="Source Title">Source Title</cite>
-                    </footer>
-                  </blockquote>
-                  <p>quasi nam. Libero dicta eum recusandae, commodi, ad, autem at ea iusto numquam veritatis, officiis. Accusantium optio minus, voluptatem? Quia reprehenderit, veniam quibusdam provident, fugit iusto ullam voluptas neque soluta adipisci ad.</p>
-                </div> -->
-
-            <div class="post-body">
-
-              <blockquote class="blockquote">
-                <p>{{ post.description }}</p>
-                <!-- <footer class="blockquote-footer">Someone famous in
-                  <cite title="Source Title">Source Title</cite>
-                </footer> -->
-              </blockquote>
-
-              {% autoescape off %}
-              {{ post.content }}
-              {% endautoescape %}
-            </div>
-
-            <div class="post-tags" id="tags">
-              {% get_tags as tags %}
-              {% for tag in tags %}
-              <a href="/blog/?q={{ tag }}" class="tag">#{{ tag }}</a>
-              {% endfor %}
-            </div>
-
-            <!-- <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row"><a href="#" class="prev-post text-left d-flex align-items-center">
-                    <div class="icon prev"><i class="fa fa-angle-left"></i></div>
-                    <div class="text"><strong class="text-primary">Previous Post </strong>
-                      <h6>I Bought a Wedding Dress.</h6>
-                    </div></a><a href="#" class="next-post text-right d-flex align-items-center justify-content-end">
-                    <div class="text"><strong class="text-primary">Next Post </strong>
-                      <h6>I Bought a Wedding Dress.</h6>
-                    </div>
-                    <div class="icon next"><i class="fa fa-angle-right">   </i></div></a></div> -->
-
-            {% if comment_status == 0 %}
-            <div class="add-comment">
-              <header>
-                <h3 class="h6">Leave a reply</h3>
-              </header>
-
-              <form action="/comment" class="commenting-form" method="POST">
-                {% csrf_token %}
-                <div class="row">
-                  <input name="next" type="hidden" value="{{ request.path }}">
-                  <div class="form-group col-md-6">
-                    <input type="text" name="comment-name" id="username" placeholder="Name" class="form-control"
-                      required="true">
-                  </div>
-                  <div class="form-group col-md-6">
-                    <input type="email" name="comment-email" id="useremail"
-                      placeholder="Email Address (will not be published)" class="form-control">
-                  </div>
-                  <div class="form-group col-md-12">
-                    <textarea name="comment-body" id="comment-body" placeholder="Type your comment" class="form-control"
-                      required="true"></textarea>
-                  </div>
-                  <div class="form-group col-md-12">
-                    <button type="submit" class="btn btn-secondary">Submit Comment</button>
-                  </div>
-                </div>
-              </form>
-
-            </div>
-            {% endif %}
-
-            {% if comment_status == 'posted' %}<br>
-            <div class="add-comment">
-              <header>
-                <h3 class="h6">Your comment has been posted !</h3>
-              </header>
-            </div>
-            {% endif %}
-
-            <div class="post-comments">
-              <header>
-                <br>
-                <h3 class="h6">Post Comments<span class="no-of-comments">({{ post.n_comments }})</span></h3>
-              </header>
-
-              {% for comment in comments %}
-              <div class="comment">
-                <div class="comment-header d-flex justify-content-between">
-                  <div class="user d-flex align-items-center">
-                    <div class="image"><img src="{% static 'img/user.svg' %}" alt="commenter"
-                        class="img-fluid rounded-circle"></div>
-                    <div class="title"><strong>{{ comment.name }}</strong><span
-                        class="date">{{ post.created_on }}</span></div>
-                  </div>
-                </div>
-                <div class="comment-body">
-                  <p>{{ comment.body }}</p>
-                </div>
-              </div>
-              {% endfor %}
-
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </main>
-    {% include 'blog/sidebar.html' %}
-
-    {% include 'blog/subscribe.html' %}
-
-
-  </div>
+	</div>
 </div>
+{% endblock %}
+
+
+{% block js %}
+{{ block.super }}
+<script>
+
+	let form = document.getElementById("commenting-form")
+	form.addEventListener("submit", (e) => {
+		comment()
+		e.preventDefault()
+	})
+
+	function join(t, a) {
+		function format(m) {
+			let f = new Intl.DateTimeFormat('en', m);
+			return f.format(t);
+		}
+		return a.map(format);
+	}
+	let a = [{ day: 'numeric' }, { month: 'short' }, { year: 'numeric' }];
+
+
+	function generateComment(name, body, date) {
+		let text = `<div class="comment">
+									<div class="comment-header d-flex justify-content-between">
+										<div class="user d-flex align-items-center">
+											<div class="image"><img src="{% static 'img/user.svg' %}" alt="commenter"
+													class="img-fluid rounded-circle"></div>
+											<div class="title"><strong>${name}</strong><span
+													class="date">${date[1]} ${date[0]}, ${date[2]}</span></div>
+										</div>
+									</div>
+									<div class="comment-body">
+										<p>${body}</p>
+									</div>
+								</div>`
+		return text
+	}
+
+	async function comment() {
+		let slug = window.location.href.split("/post/")[1]
+		let formData = Object.fromEntries(new FormData(form).entries())
+		let data = { ...formData, 'slug': slug }
+		let commentStatus = document.getElementById("comment-status")
+
+		console.log(data)
+
+		config = {
+			method: "POST",
+			body: JSON.stringify(data),
+			headers: {
+				'X-CSRFToken': data['csrfmiddlewaretoken'],
+				'Content-Type': 'application/json',
+			}
+		}
+
+
+		let spinner = document.getElementById("spinner")
+		spinner.classList.remove("hide")
+
+		await fetch("/comment/", config)
+			.then(res => {
+				console.log(res)
+				if (res.status == 200) {
+					commentStatus.innerText = "COMMENT POSTED."
+				}
+				else commentStatus.innerText = "COMMENT CANNOT BE POSTED."
+				return res.json()
+			})
+			.then(data => {
+				let date = join(new Date(data.date), a);
+				document.getElementById("comments").innerHTML = generateComment(data.name, data.body, date) + document.getElementById("comments").innerHTML
+				document.getElementById("no-of-comments").innerText = data.n_comments
+			})
+			.catch(e => commentStatus.innerText = "SERVER ERROR. Comments cannot be posted now.")
+		spinner.classList.add("hide")
+		form.reset()
+	}
+
+</script>
 {% endblock %}
