@@ -89,21 +89,23 @@ def comment(request):
 
 
 def subscribe(request):
-	if request.method == 'POST':
-		subs_email = request.POST.get('subs_email', None)
-		next = request.POST.get('next', '/')
+	email = json.loads(request.body).get('email', "ashish@gmail.com")
+	print("email received = ", email)
 
-		if subs_email is not None:
-			if Subscribers.objects.filter(email=subs_email).exists():
-				next += '?email_status=exists#subscribe'
-			else:
-				subscriber = Subscribers.objects.create(email=subs_email)
-				subscriber.save()
-				next += '?email_status=added#subscribe'
+	try:
+		if(Subscribers.objects.filter(email=email).exists()):
+			status_code = 409
+		else:
+			s = Subscribers.objects.create(email=email)
+			s.save()
+			status_code = 200
 
-		print(next)
+	except Exception as e:
+		print(str(e))
+		status_code = 500
 
-	return HttpResponseRedirect(next)
+	response = HttpResponse(status=status_code)
+	return response
 
 
 def index(request):

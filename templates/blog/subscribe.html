@@ -3,23 +3,6 @@
 		<div class="container">
 		  <div class="row">
 
-
-			{% if request.GET.email_status == 'added' %}
-			<div class="col-md-6">
-			  <h2>Subscribe to Newsletter</h2>
-			  <p class="text-big">Email added ! Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-				incididunt ut labore et dolore magna aliqua.</p>
-			</div>
-  
-			
-			{% elif request.GET.email_status == 'exists' %}
-			<div class="col-md-6">
-			  <h2>Subscribe to Newsletter</h2>
-			  <p class="text-big">Email already exists ! Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-				incididunt ut labore et dolore magna aliqua.</p>
-			</div>
-
-			{% else %}
 			<div class="col-md-6">
 			  <h2>Subscribe to Newsletter</h2>
 			  <p class="text-big">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
@@ -27,19 +10,25 @@
 			</div>
 			<div class="col-md-8">
 			  <div class="form-holder">
-				<form action="/subscribe" method="POST">
+				<form action="/subscribe" method="POST" id="subscribe-form" onsubmit="addSubscriber(); return false;">
 				  {% csrf_token %}
 				  <div class="form-group">
 					<input name="next" type="hidden" value="{{ request.path}}">
 					<input type="email" name="subs_email" id="email" placeholder="Type your email address" required>
-					<button type="submit" class="submit">Subscribe</button>
+					<button type="submit" class="submit">Subscribe
+						<div id="subscribe-spinner" class="spinner-border text-light d-none" role="status" style="width: 1rem; height: 1rem;">
+							<span class="sr-only">Loading...</span>
+						</div>
+					</button>
 				  </div>
 				</form>
 			  </div>
 			</div>
-			
-			{% endif %}
-  
+
+			<div class="col-md-6">
+			  <h3 id="subscription"></h3>
+			</div>
+			  
 		  </div>
 		  
 		</div>
